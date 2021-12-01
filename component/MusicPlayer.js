@@ -7,12 +7,20 @@ import { Audio } from 'expo-av';
 
 
 const { width, height } = Dimensions.get('window');
+function millisToMinutesAndSeconds(millis) {
+    var minutes = Math.floor(millis / 60000);
+    var seconds = ((millis % 60000) / 1000).toFixed(0);
+    return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+}
+
 const MusicPlayer = () => {
     const scrollX = useRef(new Animated.Value(0)).current
     const [songIndex, setSongIndex] = useState(0)
     const songSlider = useRef(null)
     const [sound, setSound] = useState();
     const [stop, setStop] = useState(false)
+    const [duration, setDuration] = useState(null)
+
     console.log('songIndex:', songIndex)
     async function playSound() {
         setStop(true)
@@ -22,9 +30,15 @@ const MusicPlayer = () => {
             songs[songIndex].url
         );
         setSound(sound);
-
-        console.log('Playing Sound');
         await sound.playAsync();
+        await sound.getStatusAsync()
+            .then(function (result) {
+                console.log(result.durationMillis)
+                setDuration(result.durationMillis)
+            })
+            .catch(e => console.log(e));
+        console.log("Duration", duration)
+        console.log('Playing Sound');
     }
 
     async function playS() {
@@ -118,7 +132,7 @@ const MusicPlayer = () => {
 
                 <View>
                     <Slider style={styles.progressContainer}
-                        value={10}
+                        value={0}
                         minimumValue={0}
                         maximumValue={100}
                         thumbTintColor="#FFD369"
@@ -128,7 +142,7 @@ const MusicPlayer = () => {
                     />
                     <View style={styles.progressLabelContainer}>
                         <Text style={styles.progressLabelTxt}>0:00</Text>
-                        <Text style={styles.progressLabelTxt}>3:55</Text>
+                        <Text style={styles.progressLabelTxt}>{millisToMinutesAndSeconds(duration)}</Text>
                     </View>
                 </View>
 
