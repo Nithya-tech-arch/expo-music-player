@@ -1,21 +1,21 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { View, Text, StatusBar, StyleSheet } from 'react-native';
 
-export default function App() {
-  return (
+
+import MusicPlayer from './component/MusicPlayer';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+const App=()=>{
+  return(
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+      <StatusBar barStyle="light-content"/>
+      <MusicPlayer/>
     </View>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
+export default App;
+const styles=StyleSheet.create({
+  container:{
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });
