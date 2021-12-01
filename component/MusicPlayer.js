@@ -3,6 +3,7 @@ import { SafeAreaView, View, Text, StyleSheet, Dimensions, TouchableOpacity, Tou
 import Slider from '@react-native-community/slider';
 import { Ionicons } from '@expo/vector-icons';
 import { songs } from '../model/data';
+import { Audio } from 'expo-av';
 
 
 const { width, height } = Dimensions.get('window');
@@ -10,7 +11,42 @@ const MusicPlayer = () => {
     const scrollX = useRef(new Animated.Value(0)).current
     const [songIndex, setSongIndex] = useState(0)
     const songSlider = useRef(null)
+    const [sound, setSound] = useState();
+    const [stop, setStop] = useState(false)
+    console.log('songIndex:', songIndex)
+    async function playSound() {
+        setStop(true)
+        // if(sound)
+        console.log('Loading Sound');
+        const { sound } = await Audio.Sound.createAsync(
+            songs[songIndex].url
+        );
+        setSound(sound);
+
+        console.log('Playing Sound');
+        await sound.playAsync();
+    }
+
+    async function playS() {
+        setStop(true)
+        await sound.playAsync()
+    }
+    async function pauseSound() {
+        setStop(false)
+        await sound.pauseAsync()
+        console.log("Song paused")
+    }
     useEffect(() => {
+
+        return sound
+            ? () => {
+                console.log('Unloading Sound');
+                sound.unloadAsync();
+            }
+            : undefined;
+    }, [sound]);
+    useEffect(() => {
+        playSound()
         scrollX.addListener(({ value }) => {
             const index = Math.round(value / width)
             setSongIndex(e => index)
@@ -20,14 +56,18 @@ const MusicPlayer = () => {
         }
     }, [])
     const skipToNext = () => {
+        if (songIndex === songs.length) return
         songSlider.current.scrollToOffset({
             offset: (songIndex + 1) * width
         })
+        playSound()
     }
-    const skipToPrev = () => {
-        songSlider.current.scrollToOffset({
+    const skipToPrev = async () => {
+        if (songIndex === 0) return
+        await songSlider.current.scrollToOffset({
             offset: (songIndex - 1) * width
         })
+        await playSound()
     }
     const renderSongs = ({ index, item }) => {
         return (
@@ -96,9 +136,16 @@ const MusicPlayer = () => {
                     <TouchableOpacity onPress={() => { skipToPrev() }}>
                         <Ionicons name="play-skip-back-outline" size={35} color="#FFD369" style={{ marginTop: 25 }} />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => { }}>
-                        <Ionicons name="ios-pause-circle" size={75} color="#FFD369" />
-                    </TouchableOpacity>
+                    {
+                        !stop ?
+                            <TouchableOpacity onPress={playS}>
+                                <Ionicons name="ios-play-circle" size={75} color="#FFD369" />
+                            </TouchableOpacity>
+                            :
+                            <TouchableOpacity onPress={pauseSound}>
+                                <Ionicons name="ios-pause-circle" size={75} color="#FFD369" />
+                            </TouchableOpacity>
+                    }
                     <TouchableOpacity onPress={() => { skipToNext() }}>
                         <Ionicons name="play-skip-forward-outline" size={35} color="#FFD369" style={{ marginTop: 25 }} />
                     </TouchableOpacity>
