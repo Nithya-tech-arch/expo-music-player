@@ -1,15 +1,16 @@
-import React from 'react'
-import {
-    View,
-    Text
-} from 'react-native'
-import Mp3 from './mp3'
-const Music = () => {
-    return (
-        <View>
-            <Mp3 />
-        </View>
-    )
-}
+import React from 'react';
+import { View, Text, StatusBar, StyleSheet } from 'react-native';
+import MusicPlayer from '../../component/MusicPlayer';
 
-export default Music;
+const Mp3 = () => {
+    return (
+        <MusicPlayer />
+    );
+};
+
+export default Mp3;
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+});
