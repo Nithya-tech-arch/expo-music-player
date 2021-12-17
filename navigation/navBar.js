@@ -6,13 +6,15 @@ import {
 import { FontAwesome } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { Foundation } from '@expo/vector-icons';
+import { Yellow } from '../theme/color'
+
 const Tab = createMaterialBottomTabNavigator()
 const NavBar = () => {
     return (
         <Tab.Navigator
-            activeColor='#fff'
+            activeColor={Yellow}
             inactiveColor='#EEEEEE'
-            barStyle={{ backgroundColor: "#222831", borderColor: "#000", borderStyle: 'solid', borderWidth: 2, height: 70 }}
+            barStyle={{ backgroundColor: "#222831", borderColor: Yellow, borderStyle: 'dotted', borderWidth: 1, height: 70 }}
             initialRouteName='Home'
         >
             <Tab.Screen
