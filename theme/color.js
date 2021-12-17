@@ -1,0 +1,1 @@
+export const Yellow = "#FFB902"
