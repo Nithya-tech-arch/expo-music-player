@@ -10,7 +10,6 @@ const db = Firebase.firestore();
 const Home = () => {
   const [data, setData] = useState([]);
   const [sound, setSound] = React.useState();
-
   const wait = (timeout) => {
     return new Promise((resolve) => setTimeout(resolve, timeout));
   };
@@ -19,6 +18,7 @@ const Home = () => {
     setRefreshing(true);
     wait(2000).then(() => setRefreshing(false));
   }, []);
+
 
   async function playSound(songUri) {
     await sound.getStatusAsync().then(async (e) => {
