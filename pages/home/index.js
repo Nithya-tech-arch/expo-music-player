@@ -9,7 +9,7 @@ import { Audio } from "expo-av";
 const db = Firebase.firestore();
 const Home = () => {
   const [data, setData] = useState([]);
-  const [sound, setSound] = React.useState();
+  const [sound, setSound] = useState();
   const wait = (timeout) => {
     return new Promise((resolve) => setTimeout(resolve, timeout));
   };
@@ -19,19 +19,27 @@ const Home = () => {
     wait(2000).then(() => setRefreshing(false));
   }, []);
 
-
   async function playSound(songUri) {
-    await sound.getStatusAsync().then(async (e) => {
-      if (e.isPlaying) {
-        await sound.pauseAsync();
-      } else {
-        const { sound } = await Audio.Sound.createAsync({
-          uri: songUri,
-        });
-        setSound(sound);
-        await sound.playAsync();
-      }
-    });
+    if(!sound){
+      const { sound } = await Audio.Sound.createAsync({
+        uri: songUri,
+      });
+      setSound(sound);
+      await sound.playAsync();
+    }else{
+
+      sound.getStatusAsync().then(async (e) => {
+        if (e.isPlaying) {
+          await sound.pauseAsync();
+        } else {
+          const { sound } = await Audio.Sound.createAsync({
+            uri: songUri,
+          });
+          setSound(sound);
+          await sound.playAsync();
+        }
+      });
+    }
   }
 
   useEffect(() => {
